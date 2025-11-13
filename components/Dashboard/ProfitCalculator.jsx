@@ -1,20 +1,14 @@
 "use client"
 
-import { useMemo, useEffect } from "react"
+import { useMemo, memo } from "react"
 import { useExpenses } from "@/hooks/useExpenses"
 import { useYields } from "@/hooks/useYields"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { TrendingUp, TrendingDown, DollarSign, Percent } from "lucide-react"
 
-export function ProfitCalculator() {
-  const { expenses, totalExpenses, fetchExpenses } = useExpenses()
-  const { yields, totalRevenue, fetchYields } = useYields()
-
-  // Fetch data on mount
-  useEffect(() => {
-    fetchExpenses()
-    fetchYields()
-  }, [fetchExpenses, fetchYields])
+export const ProfitCalculator = memo(function ProfitCalculator() {
+  const { expenses, totalExpenses } = useExpenses()
+  const { yields, totalRevenue } = useYields()
 
   // Calculate metrics
   const metrics = useMemo(() => {
@@ -199,5 +193,5 @@ export function ProfitCalculator() {
       )}
     </div>
   )
-}
+})
 

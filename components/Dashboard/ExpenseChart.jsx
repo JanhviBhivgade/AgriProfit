@@ -1,7 +1,7 @@
 "use client"
 
-import { useMemo, useState, useEffect } from "react"
-import { format, subDays, startOfDay, parseISO } from "date-fns"
+import { useMemo, useState, memo } from "react"
+import { format, subDays, parseISO } from "date-fns"
 import {
   LineChart,
   Line,
@@ -19,13 +19,8 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
 
-export function ExpenseChart() {
-  const { expenses, loading, fetchExpenses } = useExpenses()
-
-  // Fetch data on mount
-  useEffect(() => {
-    fetchExpenses()
-  }, [fetchExpenses])
+export const ExpenseChart = memo(function ExpenseChart() {
+  const { expenses, loading } = useExpenses()
   const [startDate, setStartDate] = useState(
     format(subDays(new Date(), 30), "yyyy-MM-dd")
   )
@@ -166,5 +161,5 @@ export function ExpenseChart() {
       </CardContent>
     </Card>
   )
-}
+})
 

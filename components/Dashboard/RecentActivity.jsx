@@ -27,16 +27,10 @@ import { Receipt, TrendingUp, Leaf } from "lucide-react"
 import { CropForm } from "@/components/Crops/CropForm"
 
 export function RecentActivity() {
-  const { expenses, loading: expensesLoading, fetchExpenses } = useExpenses()
-  const { yields, loading: yieldsLoading, fetchYields } = useYields()
+  const { expenses, loading: expensesLoading } = useExpenses()
+  const { yields, loading: yieldsLoading } = useYields()
   const { crops, createCrop, loading: cropsLoading } = useCrops()
   const [showCropDialog, setShowCropDialog] = useState(false)
-
-  // Fetch data on mount
-  useEffect(() => {
-    fetchExpenses()
-    fetchYields()
-  }, [fetchExpenses, fetchYields])
 
   const recentExpenses = useMemo(() => {
     if (!expenses) return []

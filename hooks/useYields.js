@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import { supabase } from "@/lib/supabase"
 import { useAuth } from "@/hooks/useAuth"
 
@@ -9,6 +9,7 @@ export function useYields() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const { user } = useAuth()
+  const hasFetchedRef = useRef(false)
 
   const ensureUser = useCallback(() => {
     if (!user) {
@@ -73,6 +74,24 @@ export function useYields() {
     },
     [user]
   )
+
+  // Auto-fetch on mount when user is available
+  useEffect(() => {
+    if (user && !hasFetchedRef.current) {
+      hasFetchedRef.current = true
+      fetchYields()
+    } else if (!user) {
+      setYields([])
+      setLoading(false)
+      hasFetchedRef.current = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
+
+  // Reset fetch flag when user changes
+  useEffect(() => {
+    hasFetchedRef.current = false
+  }, [user?.id])
 
   const createYield = useCallback(
     async (yieldData) => {

@@ -3,6 +3,7 @@
 import { AuthGuard } from "@/components/Auth/AuthGuard"
 import { AppLayout } from "@/components/Layout/AppLayout"
 import { ProfitCalculator } from "@/components/Dashboard/ProfitCalculator"
+import { ExpenseCalendar } from "@/components/Dashboard/ExpenseCalendar"
 import { ExpenseChart } from "@/components/Dashboard/ExpenseChart"
 import { ExpenseByCategoryChart } from "@/components/Dashboard/ExpenseByCategoryChart"
 import { CropComparison } from "@/components/Dashboard/CropComparison"
@@ -23,6 +24,9 @@ export default function Home() {
 
           {/* Profit Calculator with Key Metrics */}
           <ProfitCalculator />
+
+          {/* Expense Calendar View */}
+          <ExpenseCalendar />
 
           {/* Charts Section */}
           <div className="grid gap-6 lg:grid-cols-2">

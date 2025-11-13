@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { supabase } from "@/lib/supabase"
 import { useAuth } from "@/hooks/useAuth"
 
@@ -9,6 +9,7 @@ export function useExpenses() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const { user } = useAuth()
+  const hasFetchedRef = useRef(false)
 
   // Fetch expenses
   const fetchExpenses = useCallback(async (filters = {}) => {
@@ -78,6 +79,24 @@ export function useExpenses() {
       setLoading(false)
     }
   }, [user])
+
+  // Auto-fetch on mount when user is available
+  useEffect(() => {
+    if (user && !hasFetchedRef.current) {
+      hasFetchedRef.current = true
+      fetchExpenses()
+    } else if (!user) {
+      setExpenses([])
+      setLoading(false)
+      hasFetchedRef.current = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
+
+  // Reset fetch flag when user changes
+  useEffect(() => {
+    hasFetchedRef.current = false
+  }, [user?.id])
 
   // Create expense
   const createExpense = useCallback(async (expenseData) => {

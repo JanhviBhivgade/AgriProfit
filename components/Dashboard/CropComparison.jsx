@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useEffect } from "react"
+import { useMemo, memo } from "react"
 import {
   BarChart,
   Bar,
@@ -16,15 +16,9 @@ import { useYields } from "@/hooks/useYields"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { TrendingUp, TrendingDown } from "lucide-react"
 
-export function CropComparison() {
-  const { expenses, loading: expensesLoading, fetchExpenses } = useExpenses()
-  const { yields, loading: yieldsLoading, fetchYields } = useYields()
-
-  // Fetch data on mount
-  useEffect(() => {
-    fetchExpenses()
-    fetchYields()
-  }, [fetchExpenses, fetchYields])
+export const CropComparison = memo(function CropComparison() {
+  const { expenses, loading: expensesLoading } = useExpenses()
+  const { yields, loading: yieldsLoading } = useYields()
 
   const loading = expensesLoading || yieldsLoading
 
@@ -269,5 +263,5 @@ export function CropComparison() {
       )}
     </div>
   )
-}
+})
 

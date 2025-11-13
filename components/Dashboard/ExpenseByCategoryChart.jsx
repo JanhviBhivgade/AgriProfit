@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useEffect } from "react"
+import { useMemo, memo } from "react"
 import {
   PieChart,
   Pie,
@@ -34,13 +34,8 @@ const CATEGORY_LABELS = {
   other: "Other",
 }
 
-export function ExpenseByCategoryChart() {
-  const { expenses, loading, fetchExpenses } = useExpenses()
-
-  // Fetch data on mount
-  useEffect(() => {
-    fetchExpenses()
-  }, [fetchExpenses])
+export const ExpenseByCategoryChart = memo(function ExpenseByCategoryChart() {
+  const { expenses, loading } = useExpenses()
 
   // Process data for pie chart
   const chartData = useMemo(() => {
@@ -168,5 +163,5 @@ export function ExpenseByCategoryChart() {
       </CardContent>
     </Card>
   )
-}
+})
 
