@@ -5,7 +5,7 @@ import { format, parseISO, startOfMonth, endOfMonth, eachDayOfInterval, isSameDa
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useExpenses } from "@/hooks/useExpenses"
-import { DollarSign, Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react"
+import { IndianRupee, Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react"
 import {
   Table,
   TableBody,
@@ -156,7 +156,7 @@ export const ExpenseCalendar = memo(function ExpenseCalendar() {
               <div>
                 <p className="text-xs text-muted-foreground">Monthly Total</p>
                 <p className="text-lg font-bold">
-                  ${monthlySummary.total.toFixed(2)}
+                  ₹{monthlySummary.total.toFixed(2)}
                 </p>
               </div>
               <div>
@@ -168,13 +168,13 @@ export const ExpenseCalendar = memo(function ExpenseCalendar() {
               <div>
                 <p className="text-xs text-muted-foreground">Daily Average</p>
                 <p className="text-lg font-bold">
-                  ${monthlySummary.average.toFixed(2)}
+                  ₹{monthlySummary.average.toFixed(2)}
                 </p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Highest Day</p>
                 <p className="text-lg font-bold">
-                  ${monthlySummary.maxDayExpense.toFixed(2)}
+                  ₹{monthlySummary.maxDayExpense.toFixed(2)}
                 </p>
               </div>
             </div>
@@ -239,7 +239,7 @@ export const ExpenseCalendar = memo(function ExpenseCalendar() {
                             getTextColorClass(expenseData.total)
                           )}
                         >
-                          ${expenseData.total.toFixed(0)}
+                          ₹{expenseData.total.toFixed(0)}
                         </span>
                       )}
                       {expenseData.count > 1 && (
@@ -255,19 +255,19 @@ export const ExpenseCalendar = memo(function ExpenseCalendar() {
             <div className="flex flex-wrap items-center gap-4 text-xs p-4 bg-muted/30 rounded-lg">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded bg-green-100 dark:bg-green-900/30 border-2 border-green-300 dark:border-green-700" />
-                <span className="text-muted-foreground">Low (&lt;$50)</span>
+                <span className="text-muted-foreground">Low (&lt;₹50)</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded bg-yellow-100 dark:bg-yellow-900/30 border-2 border-yellow-300 dark:border-yellow-700" />
-                <span className="text-muted-foreground">Medium ($50-$100)</span>
+                <span className="text-muted-foreground">Medium (₹50-₹100)</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded bg-orange-100 dark:bg-orange-900/30 border-2 border-orange-300 dark:border-orange-700" />
-                <span className="text-muted-foreground">High ($100-$200)</span>
+                <span className="text-muted-foreground">High (₹100-₹200)</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded bg-red-100 dark:bg-red-900/30 border-2 border-red-300 dark:border-red-700" />
-                <span className="text-muted-foreground">Very High (&gt;$200)</span>
+                <span className="text-muted-foreground">Very High (&gt;₹200)</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-primary" />
@@ -282,13 +282,13 @@ export const ExpenseCalendar = memo(function ExpenseCalendar() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <DollarSign className="h-5 w-5" />
+            <IndianRupee className="h-5 w-5" />
             Daily Expenses - {format(selectedDate, "MMMM dd, yyyy")}
           </CardTitle>
           <CardDescription>
             {selectedDateExpenses.length === 0
               ? "No expenses recorded for this date"
-              : `${selectedDateExpenses.length} expense${selectedDateExpenses.length !== 1 ? "s" : ""} totaling $${getExpenseForDate(selectedDate).total.toFixed(2)}`}
+              : `${selectedDateExpenses.length} expense${selectedDateExpenses.length !== 1 ? "s" : ""} totaling ₹${getExpenseForDate(selectedDate).total.toFixed(2)}`}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -328,7 +328,7 @@ export const ExpenseCalendar = memo(function ExpenseCalendar() {
                         )}
                       </TableCell>
                       <TableCell className="text-right font-medium">
-                        ${parseFloat(expense.amount).toLocaleString("en-US", {
+                        ₹{parseFloat(expense.amount).toLocaleString("en-IN", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}
@@ -338,7 +338,7 @@ export const ExpenseCalendar = memo(function ExpenseCalendar() {
                   <TableRow className="bg-muted/50 font-bold">
                     <TableCell colSpan={3}>Total</TableCell>
                     <TableCell className="text-right">
-                      ${getExpenseForDate(selectedDate).total.toLocaleString("en-US", {
+                      ₹{getExpenseForDate(selectedDate).total.toLocaleString("en-IN", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                       })}

@@ -147,7 +147,10 @@ export function RecentActivity() {
                           {expense.description}
                         </TableCell>
                         <TableCell className="text-right font-medium">
-                          ${parseFloat(expense.amount).toFixed(2)}
+                          ₹{parseFloat(expense.amount).toLocaleString("en-IN", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -195,7 +198,10 @@ export function RecentActivity() {
                           {parseFloat(yieldRecord.quantity).toFixed(2)} {yieldRecord.unit}
                         </TableCell>
                         <TableCell className="text-right font-medium">
-                          ${parseFloat(yieldRecord.total_revenue).toFixed(2)}
+                          ₹{parseFloat(yieldRecord.total_revenue).toLocaleString("en-IN", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
                         </TableCell>
                       </TableRow>
                     ))}

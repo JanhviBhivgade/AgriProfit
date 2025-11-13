@@ -146,7 +146,7 @@ export function ExpenseList() {
         </CardHeader>
         <CardContent>
           <div className="text-3xl font-bold">
-            ${totalExpenses.toLocaleString("en-US", {
+            ₹{totalExpenses.toLocaleString("en-IN", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}
@@ -271,7 +271,7 @@ export function ExpenseList() {
                         )}
                       </TableCell>
                       <TableCell className="text-right font-medium">
-                        ${parseFloat(expense.amount).toLocaleString("en-US", {
+                        ₹{parseFloat(expense.amount).toLocaleString("en-IN", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}

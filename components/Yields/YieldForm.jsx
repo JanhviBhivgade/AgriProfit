@@ -173,7 +173,7 @@ export function YieldForm({ yield: yieldData, onSubmit, onCancel }) {
 
       {/* Sale Price */}
       <div className="space-y-2">
-        <Label htmlFor="sale_price">Sale Price per Unit ($) *</Label>
+        <Label htmlFor="sale_price">Sale Price per Unit (₹) *</Label>
         <Input
           id="sale_price"
           type="number"
@@ -224,13 +224,13 @@ export function YieldForm({ yield: yieldData, onSubmit, onCancel }) {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-primary">
-            ${totalRevenue.toLocaleString("en-US", {
+            ₹{totalRevenue.toLocaleString("en-IN", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            {quantity || 0} {watch("unit") || "units"} × ${salePrice || "0.00"} per unit
+            {quantity || 0} {watch("unit") || "units"} × ₹{salePrice || "0.00"} per unit
           </p>
         </CardContent>
       </Card>

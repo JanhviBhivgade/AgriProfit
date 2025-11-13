@@ -140,11 +140,11 @@ export const CropComparison = memo(function CropComparison() {
                 />
                 <YAxis
                   tick={{ fontSize: 12 }}
-                  tickFormatter={(value) => `$${value.toFixed(0)}`}
+                  tickFormatter={(value) => `₹${value.toFixed(0)}`}
                 />
                 <Tooltip
                   formatter={(value) => [
-                    `$${parseFloat(value).toLocaleString("en-US", {
+                    `₹${parseFloat(value).toLocaleString("en-IN", {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}`,
@@ -198,19 +198,19 @@ export const CropComparison = memo(function CropComparison() {
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Revenue:</span>
                       <span className="font-medium">
-                        ${mostProfitable.revenue.toFixed(2)}
+                        ₹{mostProfitable.revenue.toFixed(2)}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Expenses:</span>
                       <span className="font-medium">
-                        ${mostProfitable.expenses.toFixed(2)}
+                        ₹{mostProfitable.expenses.toFixed(2)}
                       </span>
                     </div>
                     <div className="flex justify-between pt-2 border-t">
                       <span className="font-semibold">Profit:</span>
                       <span className="font-bold text-green-600">
-                        +${mostProfitable.profit.toFixed(2)}
+                        +₹{mostProfitable.profit.toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -238,20 +238,20 @@ export const CropComparison = memo(function CropComparison() {
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Revenue:</span>
                       <span className="font-medium">
-                        ${leastProfitable.revenue.toFixed(2)}
+                        ₹{leastProfitable.revenue.toFixed(2)}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Expenses:</span>
                       <span className="font-medium">
-                        ${leastProfitable.expenses.toFixed(2)}
+                        ₹{leastProfitable.expenses.toFixed(2)}
                       </span>
                     </div>
                     <div className="flex justify-between pt-2 border-t">
                       <span className="font-semibold">Profit:</span>
                       <span className="font-bold text-red-600">
                         {leastProfitable.profit >= 0 ? "+" : ""}
-                        ${leastProfitable.profit.toFixed(2)}
+                        ₹{leastProfitable.profit.toFixed(2)}
                       </span>
                     </div>
                   </div>

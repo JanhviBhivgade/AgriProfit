@@ -138,7 +138,7 @@ export function YieldList() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-primary">
-              ${totalRevenue.toLocaleString("en-US", {
+              ₹{totalRevenue.toLocaleString("en-IN", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })}
@@ -287,20 +287,20 @@ export function YieldList() {
                         )}
                       </TableCell>
                       <TableCell className="text-right">
-                        {parseFloat(yieldRecord.quantity).toLocaleString("en-US", {
+                        {parseFloat(yieldRecord.quantity).toLocaleString("en-IN", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}{" "}
                         {yieldRecord.unit}
                       </TableCell>
                       <TableCell className="text-right">
-                        ${parseFloat(yieldRecord.sale_price).toLocaleString("en-US", {
+                        ₹{parseFloat(yieldRecord.sale_price).toLocaleString("en-IN", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}
                       </TableCell>
                       <TableCell className="text-right font-medium">
-                        ${parseFloat(yieldRecord.total_revenue).toLocaleString("en-US", {
+                        ₹{parseFloat(yieldRecord.total_revenue).toLocaleString("en-IN", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}

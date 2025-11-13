@@ -133,11 +133,11 @@ export const ExpenseChart = memo(function ExpenseChart() {
               />
               <YAxis
                 tick={{ fontSize: 12 }}
-                tickFormatter={(value) => `$${value.toFixed(0)}`}
+                tickFormatter={(value) => `₹${value.toFixed(0)}`}
               />
               <Tooltip
                 formatter={(value) => [
-                  `$${parseFloat(value).toLocaleString("en-US", {
+                  `₹${parseFloat(value).toLocaleString("en-IN", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}`,

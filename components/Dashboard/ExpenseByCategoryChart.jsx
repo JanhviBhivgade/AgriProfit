@@ -111,7 +111,7 @@ export const ExpenseByCategoryChart = memo(function ExpenseByCategoryChart() {
                 </Pie>
                 <Tooltip
                   formatter={(value) => [
-                    `$${parseFloat(value).toLocaleString("en-US", {
+                    `₹${parseFloat(value).toLocaleString("en-IN", {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}`,
@@ -147,7 +147,7 @@ export const ExpenseByCategoryChart = memo(function ExpenseByCategoryChart() {
                           {percentage.toFixed(1)}%
                         </span>
                         <span className="font-medium">
-                          ${item.value.toLocaleString("en-US", {
+                          ₹{item.value.toLocaleString("en-IN", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                           })}

@@ -351,7 +351,7 @@ export function ReportGenerator({ farmName = "Farm" }) {
               <div>
                 <span className="text-muted-foreground">Expenses:</span>{" "}
                 <span className="font-medium">
-                  ${totalExpenses.toLocaleString("en-US", {
+                  ₹{totalExpenses.toLocaleString("en-IN", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}
@@ -360,7 +360,7 @@ export function ReportGenerator({ farmName = "Farm" }) {
               <div>
                 <span className="text-muted-foreground">Revenue:</span>{" "}
                 <span className="font-medium">
-                  ${totalRevenue.toLocaleString("en-US", {
+                  ₹{totalRevenue.toLocaleString("en-IN", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}

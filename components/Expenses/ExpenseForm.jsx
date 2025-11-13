@@ -142,6 +142,8 @@ const extractExpenseData = (text) => {
   const amountRegexes = [
     /(grand\s*total|total\s*amount|amount\s*due|balance\s*due|total)\s*[:\-]?\s*([\d.,]+)/i,
     /rs\.?\s*([\d.,]+)/i,
+    /inr\.?\s*([\d.,]+)/i,
+    /₹\s*([\d.,]+)/i,
     /\$[\s]?([\d.,]+)/,
   ]
 
@@ -447,7 +449,7 @@ export function ExpenseForm({ expense, onSubmit, onCancel }) {
             <ul className="mt-2 space-y-1 text-muted-foreground">
               {ocrSummary.applied.amount && (
                 <li>
-                  <span className="font-medium text-foreground">Amount:</span> ${ocrSummary.applied.amount}
+                  <span className="font-medium text-foreground">Amount:</span> ₹{ocrSummary.applied.amount}
                 </li>
               )}
               {ocrSummary.applied.date && (
@@ -492,7 +494,7 @@ export function ExpenseForm({ expense, onSubmit, onCancel }) {
 
       {/* Amount */}
       <div className="space-y-2">
-        <Label htmlFor="amount">Amount ($) *</Label>
+        <Label htmlFor="amount">Amount (₹) *</Label>
         <Input
           id="amount"
           type="number"

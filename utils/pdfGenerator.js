@@ -89,9 +89,9 @@ export async function generatePDFReport({
     doc.setFontSize(10)
     doc.setFont("helvetica", "normal")
     const summaryData = [
-      ["Total Expenses", `$${summary.totalExpenses.toFixed(2)}`],
-      ["Total Revenue", `$${summary.totalRevenue.toFixed(2)}`],
-      ["Net Profit", `$${summary.netProfit.toFixed(2)}`],
+      ["Total Expenses", `₹${summary.totalExpenses.toFixed(2)}`],
+      ["Total Revenue", `₹${summary.totalRevenue.toFixed(2)}`],
+      ["Net Profit", `₹${summary.netProfit.toFixed(2)}`],
       ["Profit Margin", `${summary.profitMargin.toFixed(2)}%`],
     ]
 
@@ -130,7 +130,7 @@ export async function generatePDFReport({
         doc.setFont("helvetica", "bold")
         doc.text(categoryLabel + ":", margin, yPosition)
         doc.setFont("helvetica", "normal")
-        doc.text(`$${total.toFixed(2)}`, pageWidth - margin - 50, yPosition, {
+        doc.text(`₹${total.toFixed(2)}`, pageWidth - margin - 50, yPosition, {
           align: "right",
         })
         yPosition += 6
@@ -171,7 +171,7 @@ export async function generatePDFReport({
         (expense.category || "").charAt(0).toUpperCase() +
           (expense.category || "").slice(1),
         (expense.description || "").substring(0, 40),
-        `$${parseFloat(expense.amount || 0).toFixed(2)}`,
+        `₹${parseFloat(expense.amount || 0).toFixed(2)}`,
       ]
 
       rowData.forEach((data, index) => {
@@ -226,7 +226,7 @@ export async function generatePDFReport({
         format(new Date(yieldRecord.harvest_date), "MM/dd/yy"),
         yieldRecord.crops?.name || "Unknown",
         `${parseFloat(yieldRecord.quantity || 0).toFixed(2)} ${yieldRecord.unit || ""}`,
-        `$${parseFloat(yieldRecord.total_revenue || 0).toFixed(2)}`,
+        `₹${parseFloat(yieldRecord.total_revenue || 0).toFixed(2)}`,
       ]
 
       rowData.forEach((data, index) => {
@@ -301,9 +301,9 @@ export async function generatePDFReport({
         xPos = margin
         const rowData = [
           crop.name,
-          `$${crop.expenses.toFixed(2)}`,
-          `$${crop.revenue.toFixed(2)}`,
-          `$${profit.toFixed(2)}`,
+          `₹${crop.expenses.toFixed(2)}`,
+          `₹${crop.revenue.toFixed(2)}`,
+          `₹${profit.toFixed(2)}`,
         ]
 
         rowData.forEach((data, index) => {
