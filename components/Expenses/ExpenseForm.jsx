@@ -53,9 +53,180 @@ const categories = [
   { value: "other", label: "Other" },
 ]
 
+const categoryKeywords = {
+  seeds: ["seed"],
+  fertilizers: ["fertilizer", "fertiliser", "manure", "compost"],
+  pesticides: ["pesticide", "herbicide", "insecticide", "fungicide", "spray"],
+  fuel: ["fuel", "diesel", "petrol", "gasoline"],
+  labor: ["labor", "labour", "wage", "worker", "staff"],
+  equipment: ["equipment", "tractor", "machinery", "implement", "tool", "repair"],
+  water: ["water", "irrigation", "pump", "sprinkler"],
+  other: [],
+}
+
+const normalizeNumber = (input) => {
+  if (!input) return null
+  const numeric = input.replace(/[^\d.,-]/g, "")
+  if (!numeric) return null
+  const lastComma = numeric.lastIndexOf(",")
+  const lastDot = numeric.lastIndexOf(".")
+  let normalized = numeric
+
+  if (lastComma > -1 && lastDot > -1) {
+    if (lastComma > lastDot) {
+      normalized = numeric.replace(/\./g, "").replace(",", ".")
+    } else {
+      normalized = numeric.replace(/,/g, "")
+    }
+  } else if (lastComma > -1) {
+    const parts = numeric.split(",")
+    if (parts[parts.length - 1].length === 2) {
+      normalized = parts.slice(0, -1).join("") + "." + parts[parts.length - 1]
+    } else {
+      normalized = numeric.replace(/,/g, "")
+    }
+  }
+
+  const value = parseFloat(normalized)
+  return isNaN(value) ? null : value
+}
+
+const parseDateString = (value) => {
+  if (!value) return null
+  const cleaned = value.replace(/\./g, "/")
+
+  if (/^\d{4}[/-]\d{1,2}[/-]\d{1,2}$/.test(cleaned)) {
+    const date = new Date(cleaned)
+    return Number.isNaN(date.getTime()) ? null : date
+  }
+
+  if (/^\d{1,2}[/-]\d{1,2}[/-]\d{2,4}$/.test(cleaned)) {
+    const [part1, part2, part3Raw] = cleaned.split(/[/-]/)
+    const part3 = part3Raw.length === 2 ? `20${part3Raw}` : part3Raw
+    const first = parseInt(part1, 10)
+    const second = parseInt(part2, 10)
+
+    let month = first
+    let day = second
+
+    if (first > 12 && second <= 12) {
+      month = second
+      day = first
+    }
+
+    const formatted = `${part3}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+    const date = new Date(formatted)
+    return Number.isNaN(date.getTime()) ? null : date
+  }
+
+  const parsed = Date.parse(cleaned)
+  if (!Number.isNaN(parsed)) {
+    const date = new Date(parsed)
+    return Number.isNaN(date.getTime()) ? null : date
+  }
+
+  return null
+}
+
+const extractExpenseData = (text) => {
+  if (!text) return {}
+
+  const lines = text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+
+  const lower = text.toLowerCase()
+
+  // Amount detection
+  const amountRegexes = [
+    /(grand\s*total|total\s*amount|amount\s*due|balance\s*due|total)\s*[:\-]?\s*([\d.,]+)/i,
+    /rs\.?\s*([\d.,]+)/i,
+    /\$[\s]?([\d.,]+)/,
+  ]
+
+  let amount = null
+  for (const regex of amountRegexes) {
+    const match = text.match(regex)
+    if (match?.[2] || match?.[1]) {
+      amount = normalizeNumber(match[2] || match[1])
+      if (amount) break
+    }
+  }
+
+  if (!amount) {
+    const candidates = text.match(/[\d]+[\d,]*(?:\.\d{2})?/g) || []
+    if (candidates.length) {
+      const numericCandidates = candidates
+        .map(normalizeNumber)
+        .filter((val) => typeof val === "number" && !Number.isNaN(val))
+      if (numericCandidates.length) {
+        amount = Math.max(...numericCandidates)
+      }
+    }
+  }
+
+  // Date detection
+  const datePatterns = [
+    /\b\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}\b/,
+    /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/,
+    /\b\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\s+\d{2,4}\b/i,
+  ]
+
+  let detectedDate = null
+  for (const pattern of datePatterns) {
+    const match = text.match(pattern)
+    if (match?.[0]) {
+      const parsed = parseDateString(match[0])
+      if (parsed) {
+        detectedDate = parsed
+        break
+      }
+    }
+  }
+
+  // Category detection
+  let detectedCategory = null
+  for (const cat of categories) {
+    if (lower.includes(cat.value)) {
+      detectedCategory = cat.value
+      break
+    }
+  }
+
+  if (!detectedCategory) {
+    for (const [cat, keywords] of Object.entries(categoryKeywords)) {
+      if (keywords.some((keyword) => lower.includes(keyword))) {
+        detectedCategory = cat
+        break
+      }
+    }
+  }
+
+  // Description suggestion
+  const descriptionLine =
+    lines.find(
+      (line) =>
+        line.length > 3 &&
+        !/(invoice|receipt|total|amount|grand|balance|tax|date|time|bill)/i.test(line)
+    ) || lines[0] || ""
+
+  return {
+    amount,
+    date: detectedDate,
+    category: detectedCategory,
+    description: descriptionLine.slice(0, 120),
+    preview: lines.slice(0, 6).join("\n"),
+  }
+}
+
 export function ExpenseForm({ expense, onSubmit, onCancel }) {
   const { crops, loading: loadingCrops } = useCrops()
   const [submitting, setSubmitting] = useState(false)
+  const [ocrProcessing, setOcrProcessing] = useState(false)
+  const [ocrError, setOcrError] = useState(null)
+  const [ocrSummary, setOcrSummary] = useState(null)
+  const [billFileName, setBillFileName] = useState("")
 
   const {
     register,
@@ -90,6 +261,84 @@ export function ExpenseForm({ expense, onSubmit, onCancel }) {
   const selectedCategory = watch("category")
   const selectedCropId = watch("crop_id")
 
+  const handleBillUpload = async (event) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setBillFileName(file.name)
+    setOcrProcessing(true)
+    setOcrError(null)
+    setOcrSummary(null)
+
+    try {
+      const { default: Tesseract } = await import("tesseract.js")
+      const result = await Tesseract.recognize(file, "eng", {
+        logger: () => {},
+      })
+
+      const text = result?.data?.text
+
+      if (!text?.trim()) {
+        setOcrError("We couldn't detect any readable text in this image.")
+        return
+      }
+
+      const extracted = extractExpenseData(text)
+      const appliedSummary = {}
+
+      if (extracted.description) {
+        setValue("description", extracted.description, {
+          shouldDirty: true,
+          shouldValidate: true,
+        })
+        appliedSummary.description = extracted.description
+      }
+
+      if (typeof extracted.amount === "number" && !Number.isNaN(extracted.amount)) {
+        setValue("amount", extracted.amount.toFixed(2), {
+          shouldDirty: true,
+          shouldValidate: true,
+        })
+        appliedSummary.amount = extracted.amount.toFixed(2)
+      }
+
+      if (extracted.date instanceof Date && !Number.isNaN(extracted.date.getTime())) {
+        setValue("date", extracted.date, {
+          shouldDirty: true,
+          shouldValidate: true,
+        })
+        appliedSummary.date = format(extracted.date, "PPP")
+      }
+
+      if (extracted.category) {
+        setValue("category", extracted.category, {
+          shouldDirty: true,
+          shouldValidate: true,
+        })
+        const categoryLabel = categories.find((cat) => cat.value === extracted.category)?.label
+        appliedSummary.category = categoryLabel || extracted.category
+      }
+
+      if (!Object.keys(appliedSummary).length) {
+        setOcrError("We couldn't extract key values automatically. Please fill the form manually.")
+      } else {
+        setOcrSummary({
+          fileName: file.name,
+          applied: appliedSummary,
+          preview: extracted.preview,
+        })
+      }
+    } catch (error) {
+      console.error("Error processing bill image:", error)
+      setOcrError("Something went wrong while reading the bill. Try a clearer image or re-upload.")
+    } finally {
+      setOcrProcessing(false)
+      if (event.target) {
+        event.target.value = ""
+      }
+    }
+  }
+
   const onFormSubmit = async (data) => {
     setSubmitting(true)
     try {
@@ -118,7 +367,9 @@ export function ExpenseForm({ expense, onSubmit, onCancel }) {
         <Label htmlFor="category">Category *</Label>
         <Select
           value={selectedCategory}
-          onValueChange={(value) => setValue("category", value)}
+          onValueChange={(value) =>
+            setValue("category", value, { shouldDirty: true, shouldValidate: true })
+          }
         >
           <SelectTrigger id="category">
             <SelectValue placeholder="Select category" />
@@ -142,7 +393,10 @@ export function ExpenseForm({ expense, onSubmit, onCancel }) {
         <Select
           value={selectedCropId ?? "none"}
           onValueChange={(value) =>
-            setValue("crop_id", value === "none" ? null : value)
+            setValue("crop_id", value === "none" ? null : value, {
+              shouldDirty: true,
+              shouldValidate: true,
+            })
           }
           disabled={loadingCrops}
         >
@@ -162,6 +416,64 @@ export function ExpenseForm({ expense, onSubmit, onCancel }) {
           <p className="text-xs text-muted-foreground">
             No crops found. Add a crop first to link expenses.
           </p>
+        )}
+      </div>
+
+      {/* Bill Upload */}
+      <div className="space-y-2">
+        <Label htmlFor="bill-upload">Bill Upload (Optional)</Label>
+        <Input
+          id="bill-upload"
+          type="file"
+          accept="image/*"
+          onChange={handleBillUpload}
+          disabled={ocrProcessing}
+        />
+        <p className="text-xs text-muted-foreground">
+          Upload a clear photo of your bill to auto-fill key fields. Review before saving.
+        </p>
+        {ocrProcessing && (
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            Extracting details from {billFileName || "bill"}...
+          </div>
+        )}
+        {ocrError && <p className="text-sm text-destructive">{ocrError}</p>}
+        {ocrSummary && (
+          <div className="rounded-md border border-muted bg-muted/40 p-3 text-xs">
+            <p className="text-sm font-medium text-foreground">
+              Auto-filled from {ocrSummary.fileName}
+            </p>
+            <ul className="mt-2 space-y-1 text-muted-foreground">
+              {ocrSummary.applied.amount && (
+                <li>
+                  <span className="font-medium text-foreground">Amount:</span> ${ocrSummary.applied.amount}
+                </li>
+              )}
+              {ocrSummary.applied.date && (
+                <li>
+                  <span className="font-medium text-foreground">Date:</span> {ocrSummary.applied.date}
+                </li>
+              )}
+              {ocrSummary.applied.category && (
+                <li>
+                  <span className="font-medium text-foreground">Category:</span>{" "}
+                  {ocrSummary.applied.category}
+                </li>
+              )}
+              {ocrSummary.applied.description && (
+                <li>
+                  <span className="font-medium text-foreground">Description:</span>{" "}
+                  {ocrSummary.applied.description}
+                </li>
+              )}
+            </ul>
+            {ocrSummary.preview && (
+              <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
+                Text preview: {ocrSummary.preview}
+              </p>
+            )}
+          </div>
         )}
       </div>
 
@@ -214,7 +526,9 @@ export function ExpenseForm({ expense, onSubmit, onCancel }) {
             <Calendar
               mode="single"
               selected={selectedDate}
-              onSelect={(date) => setValue("date", date)}
+              onSelect={(date) =>
+                setValue("date", date, { shouldDirty: true, shouldValidate: true })
+              }
               initialFocus
             />
           </PopoverContent>

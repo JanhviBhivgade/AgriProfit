@@ -4,8 +4,7 @@ import { useState } from "react"
 import { 
   User, 
   LogOut, 
-  ChevronDown,
-  Settings as SettingsIcon
+  ChevronDown
 } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
 import { Button } from "@/components/ui/button"
@@ -80,18 +79,6 @@ export function UserMenu({ user: userProp, farmName: farmNameProp }) {
             )}
           </div>
           <div className="py-1">
-            <Button
-              variant="ghost"
-              className="w-full justify-start"
-              onClick={() => {
-                setOpen(false)
-                // TODO: Navigate to settings
-                window.location.href = "/settings"
-              }}
-            >
-              <SettingsIcon className="mr-2 h-4 w-4" />
-              Settings
-            </Button>
             <Button
               variant="ghost"
               className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
