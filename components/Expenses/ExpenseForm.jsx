@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -414,9 +415,17 @@ export function ExpenseForm({ expense, onSubmit, onCancel }) {
           </SelectContent>
         </Select>
         {!loadingCrops && crops.length === 0 && (
-          <p className="text-xs text-muted-foreground">
-            No crops found. Add a crop first to link expenses.
-          </p>
+          <div className="text-xs text-muted-foreground space-y-1">
+            <p>No crops found. Add a crop first to link expenses.</p>
+            <Button asChild variant="link" size="sm" className="px-0 h-auto text-green-600">
+              <Link href="/crops">Add crop now</Link>
+            </Button>
+          </div>
+        )}
+        {!loadingCrops && crops.length > 0 && (
+          <Button asChild variant="link" size="sm" className="px-0 h-auto text-muted-foreground">
+            <Link href="/crops">Need a new crop? Create one.</Link>
+          </Button>
         )}
       </div>
 

@@ -32,8 +32,10 @@ export function ThemeToggle({ variant = "default" }) {
       <button
         onClick={toggle}
         className={cn(
-          "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900",
-          isDark ? "bg-green-600" : "bg-gray-600"
+          "relative inline-flex h-7 w-12 items-center rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2",
+          isDark
+            ? "bg-gradient-to-r from-emerald-300 via-lime-300 to-amber-200 shadow-[0_0_18px_rgba(16,185,129,0.35)]"
+            : "bg-slate-200/80 dark:bg-slate-600/40"
         )}
         aria-label="Toggle theme"
         role="switch"
@@ -41,10 +43,12 @@ export function ThemeToggle({ variant = "default" }) {
       >
         <span
           className={cn(
-            "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
-            isDark ? "translate-x-6" : "translate-x-1"
+            "inline-flex h-5 w-5 transform items-center justify-center rounded-full bg-white text-[10px] font-semibold text-slate-500 shadow-md transition-all",
+            isDark ? "translate-x-6 text-amber-500" : "translate-x-1 text-emerald-500"
           )}
-        />
+        >
+          {isDark ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
+        </span>
       </button>
     )
   }
@@ -56,7 +60,12 @@ export function ThemeToggle({ variant = "default" }) {
       aria-label="Toggle theme"
       title="Toggle theme"
       onClick={toggle}
-      className="rounded-full hover:bg-accent"
+      className={cn(
+        "rounded-full border border-transparent px-2 py-2 transition-all",
+        isDark
+          ? "bg-gradient-to-r from-emerald-300/40 to-cyan-300/40 text-amber-100 hover:from-emerald-300/60 hover:to-cyan-300/60"
+          : "bg-slate-100/70 text-slate-600 hover:bg-slate-200/80"
+      )}
     >
       {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
     </Button>

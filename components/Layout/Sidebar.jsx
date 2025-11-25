@@ -2,16 +2,18 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { 
-  LayoutDashboard, 
-  Receipt, 
-  TrendingUp, 
-  BarChart3, 
+import {
+  LayoutDashboard,
+  Leaf,
+  Receipt,
+  TrendingUp,
+  BarChart3,
   Sparkles,
+  History,
   X,
   Settings,
   Moon,
-  Sun
+  Sun,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -21,9 +23,11 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
+  { name: "Crops", href: "/crops", icon: Leaf },
   { name: "Expenses", href: "/expenses", icon: Receipt },
   { name: "Yields", href: "/yields", icon: TrendingUp },
   { name: "Reports", href: "/reports", icon: BarChart3 },
+  { name: "Transaction History", href: "/transactions", icon: History },
   { name: "AI Crop Planner", href: "/ai-crop-planner", icon: Sparkles },
 ]
 
@@ -57,13 +61,13 @@ export function Sidebar({ isOpen, onClose }) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed left-0 top-0 z-50 h-full w-72 bg-gray-900 border-r border-gray-800 transition-transform duration-300 ease-in-out lg:translate-x-0",
+          "fixed left-0 top-0 z-50 h-full w-72 border-r border-white/10 bg-slate-950/95 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.25),_rgba(2,6,23,0.95))] text-slate-200 shadow-2xl backdrop-blur-xl transition-transform duration-300 ease-in-out lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
         <div className="flex h-full flex-col">
           {/* Logo and close button */}
-          <div className="flex h-20 items-center justify-between px-6 border-b border-gray-800">
+          <div className="flex h-20 items-center justify-between border-b border-white/10 px-6">
             <Link href="/" className="flex items-center space-x-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-600 text-white">
                 <span className="text-2xl">🌾</span>
@@ -73,7 +77,7 @@ export function Sidebar({ isOpen, onClose }) {
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden text-gray-400 hover:text-white hover:bg-gray-800"
+              className="text-gray-300 hover:bg-white/10 hover:text-white lg:hidden"
               onClick={onClose}
             >
               <X className="h-5 w-5" />
@@ -83,7 +87,7 @@ export function Sidebar({ isOpen, onClose }) {
           {/* Navigation - MANAGE Section */}
           <nav className="flex-1 space-y-2 px-4 py-6">
             <div className="mb-6">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-3">
+              <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-emerald-200/80">
                 MANAGE
               </p>
               <div className="space-y-1">
@@ -103,13 +107,13 @@ export function Sidebar({ isOpen, onClose }) {
                         }
                       }}
                       className={cn(
-                        "flex items-center space-x-3 rounded-lg px-4 py-3 text-sm font-medium transition-all",
+                        "flex items-center space-x-3 rounded-xl px-4 py-3 text-sm font-medium transition-all",
                         isActive
-                          ? "bg-gray-800 text-white"
-                          : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                          ? "bg-white/15 text-white shadow-lg shadow-emerald-500/10"
+                          : "text-slate-300 hover:bg-white/10 hover:text-white"
                       )}
                     >
-                      <Icon className={cn("h-5 w-5", isActive && "text-green-500")} />
+                      <Icon className={cn("h-5 w-5", isActive ? "text-emerald-300" : "text-slate-400")} />
                       <span>{item.name}</span>
                     </Link>
                   )
@@ -119,13 +123,13 @@ export function Sidebar({ isOpen, onClose }) {
 
             {/* PREFERENCES Section */}
             <div className="mt-8">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-3">
+              <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-emerald-200/80">
                 PREFERENCES
               </p>
               <div className="space-y-1">
-                <div className="flex items-center justify-between rounded-lg px-4 py-3 text-gray-400 hover:bg-gray-800 hover:text-white transition-all">
+                <div className="flex items-center justify-between rounded-xl px-4 py-3 text-slate-300 transition-all hover:bg-white/10 hover:text-white">
                   <div className="flex items-center space-x-3">
-                    <Moon className="h-5 w-5" />
+                    <Moon className="h-5 w-5 text-emerald-200/90" />
                     <span className="text-sm font-medium">Theme</span>
                   </div>
                   <ThemeToggle variant="switch" />
@@ -135,8 +139,8 @@ export function Sidebar({ isOpen, onClose }) {
           </nav>
 
           {/* User Profile Footer */}
-          <div className="border-t border-gray-800 p-4">
-            <div className="flex items-center space-x-3 px-2 py-2 rounded-lg hover:bg-gray-800 transition-colors">
+          <div className="border-t border-white/10 p-4">
+            <div className="flex items-center space-x-3 rounded-xl px-2 py-2 transition-colors hover:bg-white/10">
               <Avatar className="h-10 w-10 border-2 border-green-600">
                 <AvatarFallback className="bg-green-600 text-white text-sm">
                   {getInitials(displayName)}

@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <AuthGuard>
       <AppLayout>
-        <div className="space-y-8 bg-gray-50 min-h-screen p-6 lg:p-8">
+        <div className="space-y-8 rounded-3xl border border-white/70 bg-white/85 p-6 shadow-2xl backdrop-blur-lg dark:border-white/10 dark:bg-slate-950/40 lg:p-10">
           {/* Summary Cards - Top Row */}
           <SummaryCards />
 
@@ -92,21 +92,6 @@ export default function Home() {
               </CardContent>
             </Card>
           </div>
-
-          {/* Transaction History */}
-          <Card className="bg-white shadow-lg border-0">
-            <CardHeader>
-              <CardTitle className="text-xl font-bold text-gray-900 mb-1">
-                Transaction History
-              </CardTitle>
-              <CardDescription className="text-gray-600">
-                Recent expenses and yields
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <RecentActivity />
-            </CardContent>
-          </Card>
 
           {/* Additional Sections */}
           <div className="grid gap-6 lg:grid-cols-2">

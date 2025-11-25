@@ -6,7 +6,7 @@ import { useExpenses } from "@/hooks/useExpenses"
 import { useYields } from "@/hooks/useYields"
 import { formatCurrency } from "@/lib/utils"
 
-export function RecentActivity() {
+export function RecentActivity({ limit = 10 }) {
   const { expenses, loading: expensesLoading, fetchExpenses } = useExpenses()
   const { yields, loading: yieldsLoading, fetchYields } = useYields()
 
@@ -16,18 +16,16 @@ export function RecentActivity() {
     fetchYields()
   }, [fetchExpenses, fetchYields])
 
-  const recentExpenses = useMemo(() => {
+  const sortedExpenses = useMemo(() => {
     if (!expenses) return []
     return [...expenses]
       .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .slice(0, 5)
   }, [expenses])
 
-  const recentYields = useMemo(() => {
+  const sortedYields = useMemo(() => {
     if (!yields) return []
     return [...yields]
       .sort((a, b) => new Date(b.harvest_date) - new Date(a.harvest_date))
-      .slice(0, 5)
   }, [yields])
 
   // Combine and sort all transactions
@@ -35,7 +33,7 @@ export function RecentActivity() {
     const transactions = []
     
     // Add expenses
-    recentExpenses.forEach((expense) => {
+    sortedExpenses.forEach((expense) => {
       transactions.push({
         id: `expense-${expense.id}`,
         type: 'expense',
@@ -49,7 +47,7 @@ export function RecentActivity() {
     })
     
     // Add yields
-    recentYields.forEach((yieldRecord) => {
+    sortedYields.forEach((yieldRecord) => {
       transactions.push({
         id: `yield-${yieldRecord.id}`,
         type: 'yield',
@@ -62,11 +60,10 @@ export function RecentActivity() {
       })
     })
     
-    // Sort by date (newest first) and take top 10
-    return transactions
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .slice(0, 10)
-  }, [recentExpenses, recentYields])
+    // Sort by date (newest first) and optionally limit
+    const sortedTransactions = transactions.sort((a, b) => new Date(b.date) - new Date(a.date))
+    return typeof limit === "number" ? sortedTransactions.slice(0, limit) : sortedTransactions
+  }, [limit, sortedExpenses, sortedYields])
 
   return (
     <div className="space-y-4">
@@ -79,11 +76,11 @@ export function RecentActivity() {
           {allTransactions.map((transaction) => (
             <div
               key={transaction.id}
-              className="flex items-center justify-between p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+              className="flex items-center justify-between rounded-2xl border border-white/80 bg-white/90 p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg dark:border-white/10 dark:bg-slate-900/60"
             >
               <div className="flex items-center gap-4 flex-1">
                 {/* Avatar/Icon */}
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white border-2 border-gray-200">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/70 bg-white text-xl shadow-sm dark:border-white/10 dark:bg-slate-900">
                   <span className="text-2xl">{transaction.icon}</span>
                 </div>
                 

@@ -15,8 +15,8 @@ export function Header({ onMenuClick, user: userProp, farmName: farmNameProp }) 
   const farmName = profile?.farm_name || farmNameProp
 
   return (
-    <header className="sticky top-0 z-30 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
-      <div className="flex h-16 items-center gap-4 px-6 lg:px-8">
+    <header className="sticky top-0 z-30 w-full border-b border-border/60 bg-white/85 text-foreground backdrop-blur-xl supports-[backdrop-filter]:bg-white/70 dark:border-white/5 dark:bg-slate-900/75 dark:supports-[backdrop-filter]:bg-slate-900/60">
+      <div className="flex h-16 items-center gap-4 px-4 sm:px-6 lg:px-8">
         {/* Mobile menu button */}
         <Button
           variant="ghost"
@@ -29,7 +29,7 @@ export function Header({ onMenuClick, user: userProp, farmName: farmNameProp }) 
 
         {/* Page Title */}
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
         </div>
 
         {/* Actions */}
